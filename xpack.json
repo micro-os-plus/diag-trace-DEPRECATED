@@ -1,0 +1,54 @@
+{
+	"$schema": "http://xcdl.github.io/schemas/xpack-1-1.json",
+	"name": "ilg-diag-trace",
+	"title": "Diag Trace",
+	"description": "An xPack with a trace facility, used for diagnostics.",
+	"xcdlFile": ".xcdl.json",
+	"repository": 
+	{
+		"type": "git",
+		"url": "https://github.com/micro-os-plus/diag-trace.git",
+		"archive": "https://github.com/micro-os-plus/diag-trace/archive/xpack.zip"
+	},
+
+	"version": "0.1.1",
+	"releases": [
+		
+	],
+
+	"keywords": [
+		"diag",
+		"trace",
+		"printf",
+		"portable"
+	],
+
+	"homepage": "https://github.com/micro-os-plus/diag-trace",
+	"support": [
+		{
+			"description": "all issues",
+			"url": "https://github.com/micro-os-plus/diag-trace/issues"
+		}
+	],
+
+	"license": "LGPL-3.0",
+	"maintainers": [
+		{
+			"name": "Liviu Ionescu",
+			"email": "ilg@livius.net",
+			"url": "http://liviusdotnet.worldpress.com"
+		}
+	],
+
+	"contributors": [
+		{
+			"name": "Liviu Ionescu",
+			"email": "ilg@livius.net",
+			"url": "http://liviusdotnet.worldpress.com"
+		}
+	],
+
+	"dependencies": [
+		
+	]
+}

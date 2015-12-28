@@ -1,0 +1,24 @@
+{
+	"name": "ilg-diag-trace",
+	"description": "An xPack with a trace facility, used for diagnostics.",
+	"version": "0.1.1",
+	"keywords": [
+		"diag",
+		"trace",
+		"printf",
+		"portable",
+		"xpack",
+		"xcdl"
+	],
+	"author": "Liviu Ionescu <ilg@livius.net>",
+	"homepage": "https://github.com/micro-os-plus/diag-trace",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/micro-os-plus/diag-trace.git"
+	},
+	"bugs": {
+		"url": "https://github.com/micro-os-plus/diag-trace/issues"
+	},
+	"license": "LGPL-3.0",
+	"dependencies": {}
+}
