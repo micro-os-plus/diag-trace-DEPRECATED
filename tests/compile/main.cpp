@@ -16,28 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(TRACE)
-
 #include "diag/trace.h"
-#include <unistd.h>
 
-// ----------------------------------------------------------------------------
+#include <cstdio>
 
-void __attribute__((weak))
-trace_initialize (void)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
+int main(int argc, char* argv[])
 {
-  ; // For POSIX no inits are required.
+  os::trace::initialize();
+
+  const char msg[] = "Message";
+  os::trace::write(msg, 7);
+
+  os::trace::printf("format %d", 7);
+
+  os::trace::puts("Message");
+  os::trace::putchar('c');
 }
 
-// ----------------------------------------------------------------------------
-
-ssize_t __attribute__((weak))
-trace_write (const char* buf __attribute__((unused)), size_t nbyte)
-{
-  return (ssize_t) nbyte;
-}
-
-#endif // defined(TRACE)
-
-// ----------------------------------------------------------------------------
-
+#pragma GCC diagnostic pop

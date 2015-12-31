@@ -21,7 +21,15 @@
 
 // ----------------------------------------------------------------------------
 
+#if defined(__cplusplus)
+#include <cstdint>
+#include <cstddef>
+#include <cstdarg>
+#else
 #include <stdint.h>
+#include <stdarg.h>
+#endif
+
 #include <sys/types.h>
 
 // ----------------------------------------------------------------------------
@@ -29,21 +37,60 @@
 // The trace device is an independent output channel, intended for diagnostic
 // purposes.
 //
-// The API is simple, and mimics the standard output calls:
-// - trace_printf()
-// - trace_puts()
-// - trace_putchar();
+// The API is simple, and mimics the standard C output calls:
+// - os::trace::printf()/trace_printf()
+// - os::trace::puts()/trace_puts()
+// - os::trace::putchar()/trace_putchar();
 //
-// The implementation is done in
-// - trace_write()
+// The implementation is done in:
+// - os::trace::initialize()
+// - os::trace::write()
+// If these functions are not defined in another place, there are
+// weak definitions that simply discard the trace output.
 //
 // Trace support is enabled by adding the TRACE definition.
 //
 // When TRACE is not defined, all functions are inlined to empty bodies.
-// This has the advantage that the trace call do not need to be conditionally
+// This has the advantage that the trace calls do not need to be conditionally
 // compiled with #ifdef TRACE/#endif
 
 #if defined(TRACE)
+
+#if defined(__cplusplus)
+
+namespace os
+{
+  namespace trace
+  {
+    // ------------------------------------------------------------------------
+
+    void
+    initialize (void);
+
+    ssize_t
+    write (const char* buf, std::size_t nbyte);
+
+    // ------------------------------------------------------------------------
+
+    int
+    printf (const char* format, ...);
+
+    int
+    vprintf (const char* format, std::va_list args);
+
+    int
+    puts (const char* s);
+
+    int
+    putchar (int c);
+
+    void
+    dumpArgs (int argc, char* argv[]);
+
+  } /* namespace trace */
+} /* namespace os */
+
+#endif /* defined(__cplusplus) */
 
 #if defined(__cplusplus)
 extern "C"
@@ -65,6 +112,9 @@ extern "C"
   trace_printf (const char* format, ...);
 
   int
+  trace_vprintf (const char* format, va_list args);
+
+  int
   trace_puts (const char* s);
 
   int
@@ -77,7 +127,92 @@ extern "C"
 }
 #endif
 
-#else // !defined(TRACE)
+#else /* !defined(TRACE) */
+
+// Empty definitions when trace is not defined
+
+#if defined(__cplusplus)
+
+namespace os
+  {
+    namespace trace
+      {
+        // ------------------------------------------------------------------------
+
+        inline void
+        initialize (void);
+
+        inline ssize_t
+        write (const char* buf, std::size_t nbyte);
+
+        // ------------------------------------------------------------------------
+
+        inline int
+        printf (const char* format, ...);
+
+        inline int
+        vprintf (const char* format, std::va_list args);
+
+        inline int
+        puts (const char* s);
+
+        inline int
+        putchar (int c);
+
+        inline void
+        dumpArgs (int argc, char* argv[]);
+
+        // ------------------------------------------------------------------------
+
+        inline void __attribute__((always_inline))
+        initialize (void)
+          {
+          }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
+        inline ssize_t __attribute__((always_inline))
+        write (const char* buf, std::size_t nbyte)
+          {
+            return nbyte;
+          }
+
+        inline int __attribute__((always_inline))
+        printf (const char* format, ...)
+          {
+            return 0;
+          }
+
+        inline int __attribute__((always_inline))
+        vprintf (const char* format, std::va_list args)
+          {
+            return 0;
+          }
+
+        inline int __attribute__((always_inline))
+        puts (const char* s)
+          {
+            return 0;
+          }
+
+        inline int __attribute__((always_inline))
+        putchar (int c)
+          {
+            return c;
+          }
+
+        inline void __attribute__((always_inline))
+        dumpArgs (int argc, char* argv[])
+          {
+          }
+
+#pragma GCC diagnostic pop
+
+      } /* namespace trace */
+  } /* namespace os */
+
+#endif /* defined(__cplusplus) */
 
 #if defined(__cplusplus)
 extern "C"
@@ -93,6 +228,9 @@ extern "C"
 
     inline int
     trace_printf (const char* format, ...);
+
+    inline int
+    trace_vprintf (const char* format, va_list args);
 
     inline int
     trace_puts (const char* s);
@@ -113,8 +251,6 @@ trace_initialize (void)
   {
   }
 
-// Empty definitions when trace is not defined
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
@@ -122,12 +258,19 @@ inline ssize_t
 __attribute__((always_inline))
 trace_write (const char* buf, size_t nbyte)
   {
-    return 0;
+    return nbyte;
   }
 
 inline int
 __attribute__((always_inline))
 trace_printf (const char* format, ...)
+  {
+    return 0;
+  }
+
+inline int
+__attribute__((always_inline))
+trace_vprintf (const char* format, va_list args)
   {
     return 0;
   }
@@ -152,8 +295,10 @@ trace_dump_args (int argc, char* argv[])
   {
   }
 
-#endif // defined(TRACE)
+#pragma GCC diagnostic pop
+
+#endif /* defined(TRACE) */
 
 // ----------------------------------------------------------------------------
 
-#endif // DIAG_TRACE_H_
+#endif /* DIAG_TRACE_H_ */
