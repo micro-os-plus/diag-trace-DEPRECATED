@@ -56,7 +56,13 @@
 
 #if defined(TRACE)
 
+#pragma push_macro("putchar")
+
 #if defined(__cplusplus)
+
+#if defined(putchar)
+#undef putchar
+#endif
 
 namespace os
 {
@@ -68,7 +74,7 @@ namespace os
     initialize (void);
 
     ssize_t
-    write (const char* buf, std::size_t nbyte);
+    write (const void* buf, std::size_t nbyte);
 
     // ------------------------------------------------------------------------
 
@@ -104,7 +110,7 @@ extern "C"
   trace_initialize (void);
 
   ssize_t
-  trace_write (const char* buf, size_t nbyte);
+  trace_write (const void* buf, size_t nbyte);
 
   // ----- Portable -----
 
@@ -143,7 +149,7 @@ namespace os
         initialize (void);
 
         inline ssize_t
-        write (const char* buf, std::size_t nbyte);
+        write (const void* buf, std::size_t nbyte);
 
         // ------------------------------------------------------------------------
 
@@ -173,7 +179,7 @@ namespace os
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
         inline ssize_t __attribute__((always_inline))
-        write (const char* buf, std::size_t nbyte)
+        write (const void* buf, std::size_t nbyte)
           {
             return nbyte;
           }
@@ -224,7 +230,7 @@ extern "C"
 
     // Implementation dependent
     inline ssize_t
-    trace_write (const char* buf, size_t nbyte);
+    trace_write (const void* buf, size_t nbyte);
 
     inline int
     trace_printf (const char* format, ...);
@@ -256,7 +262,7 @@ trace_initialize (void)
 
 inline ssize_t
 __attribute__((always_inline))
-trace_write (const char* buf, size_t nbyte)
+trace_write (const void* buf, size_t nbyte)
   {
     return nbyte;
   }
@@ -296,6 +302,8 @@ trace_dump_args (int argc, char* argv[])
   }
 
 #pragma GCC diagnostic pop
+
+#pragma pop_macro("putchar")
 
 #endif /* defined(TRACE) */
 

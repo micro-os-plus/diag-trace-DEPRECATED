@@ -43,7 +43,7 @@ namespace os
     }
 
     ssize_t
-    write (const char* buf, std::size_t nbyte)
+    write (const void* buf, std::size_t nbyte)
     {
       assert(count + nbyte < sizeof(traceBuff));
       std::memcpy (&traceBuff[count], buf, nbyte);

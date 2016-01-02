@@ -43,7 +43,7 @@ namespace os
     }
 
     ssize_t __attribute__((weak))
-    write (const char* buf __attribute__((unused)), std::size_t nbyte)
+    write (const void* buf __attribute__((unused)), std::size_t nbyte)
     {
       return (ssize_t) nbyte;
     }
@@ -143,18 +143,39 @@ trace_initialize (void)
 }
 
 ssize_t __attribute__((weak))
-trace_write (const char* buf, std::size_t nbyte)
+trace_write (const void* buf, std::size_t nbyte)
 {
   return os::trace::write (buf, nbyte);
 }
 
 // ----------------------------------------------------------------------------
 
-#if defined(__APPLE__)
+#if defined(__ARM_EABI__)
 
-// The OS X Mach linker is an odd case, since it does not support aliases.
-// The workaround is to redefine the C functions to call the C++ versions.
-// (code size or speed are not a problem when running on OS X).
+// For embedded platforms, optimise with aliases.
+//
+// Aliases can only refer symbols defined in the same translation unit
+// and C++ de-mangling must be done manually.
+
+int __attribute__((weak, alias ("_ZN2os5trace6printfEPKcz")))
+trace_printf (const char* format, ...);
+
+int __attribute__((weak, alias ("_ZN2os5trace7vprintfEPKcSt9__va_list")))
+trace_vprintf (const char* format, ...);
+
+int __attribute__((weak, alias("_ZN2os5trace4putsEPKc")))
+trace_puts (const char *s);
+
+int __attribute__((weak, alias("_ZN2os5trace7putcharEi")))
+trace_putchar (int c);
+
+void __attribute__((weak, alias("_ZN2os5trace8dumpArgsEiPPc")))
+trace_dump_args (int argc, char* argv[]);
+
+#else
+
+// For non-embedded platforms, to remain compatible with OS X which does
+// not support aliases, redefine the C functions to call the C++ versions.
 
 int
 trace_printf (const char* format, ...)
@@ -191,28 +212,6 @@ trace_dump_args (int argc, char* argv[])
 {
   os::trace::dumpArgs (argc, argv);
 }
-
-#else
-
-// All on other platforms, define C aliases to C++ functions.
-//
-// Aliases can only refer symbols defined in the same translation unit
-// and C++ de-mangling must be done manually.
-
-int __attribute__((weak, alias ("__ZN2os5trace6printfEPKcz")))
-trace_printf (const char* format, ...);
-
-int __attribute__((weak, alias ("__ZN2os5trace7vprintfEPKcP13__va_list_tag")))
-trace_vprintf (const char* format, ...);
-
-int __attribute__((weak, alias("__ZN2os5trace4putsEPKc")))
-trace_puts (const char *s);
-
-int __attribute__((weak, alias("__ZN2os5trace7putcharEi")))
-trace_putchar (int c);
-
-void __attribute__((weak, alias("__ZN2os5trace8dumpArgsEiPPc")))
-trace_dump_args (int argc, char* argv[]);
 
 #endif
 
