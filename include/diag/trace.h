@@ -56,8 +56,6 @@
 
 #if defined(TRACE)
 
-#pragma push_macro("putchar")
-
 #if defined(__cplusplus)
 
 #if defined(putchar)
@@ -302,8 +300,6 @@ trace_dump_args (int argc, char* argv[])
   }
 
 #pragma GCC diagnostic pop
-
-#pragma pop_macro("putchar")
 
 #endif /* defined(TRACE) */
 
