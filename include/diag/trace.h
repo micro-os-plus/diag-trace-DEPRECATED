@@ -179,7 +179,7 @@ namespace os
         inline ssize_t __attribute__((always_inline))
         write (const void* buf, std::size_t nbyte)
           {
-            return nbyte;
+            return (ssize_t)nbyte;
           }
 
         inline int __attribute__((always_inline))
@@ -262,7 +262,7 @@ inline ssize_t
 __attribute__((always_inline))
 trace_write (const void* buf, size_t nbyte)
   {
-    return nbyte;
+    return (ssize_t)nbyte;
   }
 
 inline int

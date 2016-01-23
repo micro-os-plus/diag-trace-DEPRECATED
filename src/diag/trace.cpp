@@ -76,7 +76,7 @@ namespace os
       if (ret > 0)
         {
           // Transfer the buffer to the device.
-          ret = os::trace::write (buf, (size_t) ret);
+          ret = (int)os::trace::write (buf, (size_t) ret);
         }
       return ret;
     }
@@ -84,10 +84,10 @@ namespace os
     int __attribute__((weak))
     puts (const char* s)
     {
-      int ret = os::trace::write (s, strlen (s));
+      int ret = (int)os::trace::write (s, strlen (s));
       if (ret > 0)
         {
-          ret = os::trace::write ("\n", 1); // Add a line terminator
+          ret = (int)os::trace::write ("\n", 1); // Add a line terminator
         }
       if (ret > 0)
         {
@@ -102,7 +102,7 @@ namespace os
     int __attribute__((weak))
     putchar (int c)
     {
-      int ret = os::trace::write ((const char*) &c, 1);
+      int ret = (int)os::trace::write ((const char*) &c, 1);
       if (ret > 0)
         {
           return c;
